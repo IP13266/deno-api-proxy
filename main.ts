@@ -8,7 +8,7 @@ async function handleRequest(request: Request): Promise<Response> {
 
   // 如果请求的是根目录或index.html，则返回代理服务运行状态信息
   if (pathname === '/' || pathname === '/index.html') {
-    return new Response('Proxy is Running！Details：https://github.com/tech-shrimp/deno-api-proxy', {
+    return new Response('Proxy is Running！Details：https://github.com/IP13266/deno-api-proxy', {
       status: 200,
       headers: { 'Content-Type': 'text/html' }
     });
