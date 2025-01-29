@@ -1,4 +1,7 @@
 {
+  "compilerOptions": {
+    "lib": ["deno.window"]
+  },
   "tasks": {
     "dev": "deno run --watch main.ts"
   },
