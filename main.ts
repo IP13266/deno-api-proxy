@@ -1,4 +1,6 @@
-/// <reference types="https://deno.land/x/deno/types/global.d.ts" />
+declare namespace Deno {
+  function serve(handler: (request: Request) => Promise<Response>): void;
+}
 
 // 代理服务器的主要处理函数
 async function handleRequest(request: Request): Promise<Response> {
@@ -8,29 +10,27 @@ async function handleRequest(request: Request): Promise<Response> {
 
   // 如果请求的是根目录或index.html，则返回代理服务运行状态信息
   if (pathname === '/' || pathname === '/index.html') {
-    return new Response('Proxy is Running！Details：https://github.com/IP13266/deno-api-proxy', {
+    return new Response('Proxy is Running！Details：https://github.com/tech-shrimp/deno-api-proxy', {
       status: 200,
       headers: { 'Content-Type': 'text/html' }
     });
   } 
 
-  // 根据不同的API地址进行不同的处理
-  let targetUrl: string;
+  // 只处理支持的API路径
+  let targetUrl: string | null = null;
   if (pathname.startsWith('/openai')) {
-    // 设置目标URL，即需要代理的Open AI API地址
     targetUrl = `https://api.openai.com${pathname}`;
   } else if (pathname.startsWith('/claude')) {
-    // 设置目标URL，即需要代理的Claude API地址
     targetUrl = `https://api.claude.com${pathname}`;
   } else if (pathname.startsWith('/groq')) {
-    // 设置目标URL，即需要代理的Groq API地址
     targetUrl = `https://api.groq.com${pathname}`;
   } else if (pathname.startsWith('/openrouter.ai')) {
-    // 设置目标URL，即需要代理的openrouter.ai API地址
     targetUrl = `https://api.openrouter.ai${pathname}`;
-  } else {
-    // 其他API地址的处理
-    targetUrl = `https://${pathname}`;
+  }
+
+  // 如果不是支持的API路径，返回404
+  if (!targetUrl) {
+    return new Response('Not Found', { status: 404 });
   }
 
   try {
